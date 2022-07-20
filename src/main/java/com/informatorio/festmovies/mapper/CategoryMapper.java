@@ -4,6 +4,10 @@ import com.informatorio.festmovies.dto.CategoryDTO;
 import com.informatorio.festmovies.entities.CategoryEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Component
 public class CategoryMapper {
 
@@ -13,5 +17,11 @@ public class CategoryMapper {
 
     public CategoryDTO toCategoryDTO(CategoryEntity categoryEntity){
         return CategoryDTO.builder().id(categoryEntity.getId()).name(categoryEntity.getName()).build();
+    }
+
+    public List<CategoryDTO> toListCategoryDTO(List<CategoryEntity> categoryEntity){
+        return categoryEntity.stream()
+                .map(this::toCategoryDTO)
+                .collect(toList());
     }
 }

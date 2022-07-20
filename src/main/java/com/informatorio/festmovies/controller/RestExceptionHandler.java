@@ -1,10 +1,10 @@
 package com.informatorio.festmovies.controller;
 
 import com.informatorio.festmovies.exception.CategoryExistException;
+import com.informatorio.festmovies.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,8 @@ import java.util.List;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value ={CategoryExistException.class})
-    protected ResponseEntity<Object> handleCategoryExistException(Exception ex, WebRequest request){
+    @ExceptionHandler(value = {CategoryExistException.class})
+    protected ResponseEntity<Object> handleCategoryExistException(Exception ex, WebRequest request) {
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
 
@@ -33,7 +33,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .message(ex.getMessage())
                 .build();
-    return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), errorDTO.getStatus(), request);
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), errorDTO.getStatus(), request);
     }
 
     @Override
@@ -42,11 +42,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         Date date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
 
-        for (FieldError error : ex.getBindingResult().getFieldErrors()){
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             message.add(error.getField() + " " + error.getDefaultMessage());
         }
 
-        ApiErrorDTO apiError =ApiErrorDTO
+        ApiErrorDTO apiError = ApiErrorDTO
                 .builder()
                 .timestamp(timestamp)
                 .status(HttpStatus.BAD_REQUEST)
@@ -56,11 +56,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
     }
 
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    protected ResponseEntity<Object> handleResourceNotFoundException(Exception ex, WebRequest request) {
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+
+        ApiErrorDTO errorDTO = ApiErrorDTO.builder()
+                .timestamp(timestamp)
+                .status(HttpStatus.NOT_FOUND)
+                .message(ex.getMessage())
+                .build();
+        return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), errorDTO.getStatus(), request);
+    }
+
     @Data
     @Builder
     @AllArgsConstructor
-    @NoArgsConstructor
-    private static class ApiErrorDTO{
+    private static class ApiErrorDTO {
         private Timestamp timestamp;
         private HttpStatus status;
         private String message;
