@@ -1,24 +1,25 @@
 package com.informatorio.festmovies.dto;
 
-import com.informatorio.festmovies.entities.CategoryEntity;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
+
 
 @Data
 @Builder
 public class MovieDTO {
+
     private Long id;
     @NotBlank
     private String title;
     @NotBlank
     private String description;
+    @NotNull
+    private Double duration;
     @NotBlank
-    private double duration;
-    @NotBlank
-    private LocalDate inscription;
-    @NotBlank
+    private String inscription;
+    @NotNull
     private CategoryDTO category;
 }

@@ -6,6 +6,8 @@ import com.informatorio.festmovies.entities.CategoryEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class MovieMapper {
 
@@ -14,7 +16,7 @@ public class MovieMapper {
                 .title(movieDTO.getTitle())
                 .description(movieDTO.getDescription())
                 .duration(movieDTO.getDuration())
-                .inscription(movieDTO.getInscription())
+                .inscription(LocalDate.parse(movieDTO.getInscription()))
                 .category(getCategoryEntity(movieDTO))
                 .build();
     }
@@ -32,7 +34,7 @@ public class MovieMapper {
                 .title(movieEntity.getTitle())
                 .description(movieEntity.getDescription())
                 .duration(movieEntity.getDuration())
-                .inscription(movieEntity.getInscription())
+                .inscription(String.valueOf(movieEntity.getInscription()))
                 .category(getCategoryDTO(movieEntity))
                 .build();
     }
