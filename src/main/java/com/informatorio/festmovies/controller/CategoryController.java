@@ -7,8 +7,9 @@ import com.informatorio.festmovies.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/category")
@@ -22,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addCategory(@Validated @RequestBody CategoryDTO categoryDTO) throws CategoryExistException {
+    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws CategoryExistException {
         return new ResponseEntity<>(categoryService.addCategory(categoryDTO), HttpStatus.CREATED);
     }
 
@@ -31,7 +32,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.getAllCategory(), HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) throws ResourceNotFoundException {
+    public ResponseEntity<?> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryDTO categoryDTO) throws ResourceNotFoundException {
         return new ResponseEntity<>(categoryService.updateCategory(id,categoryDTO), HttpStatus.OK);
     }
 
