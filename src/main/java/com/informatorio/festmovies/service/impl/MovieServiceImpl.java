@@ -9,6 +9,8 @@ import com.informatorio.festmovies.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -27,5 +29,14 @@ public class MovieServiceImpl implements MovieService {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found category id: " + movieDTO.getCategory().getId()));
         MovieEntity movieEntity1 = movieRepository.save(movieEntity);
         return movieMapper.toDTO(movieEntity1);
+    }
+
+    @Override
+    public List<MovieDTO> getAllMovies() throws ResourceNotFoundException {
+        List<MovieEntity> listMovie = movieRepository.findAll();
+        if(listMovie.size() == 0){
+            throw new ResourceNotFoundException("List Empty");
+        }
+        return movieMapper.toListMovieDTO(listMovie);
     }
 }

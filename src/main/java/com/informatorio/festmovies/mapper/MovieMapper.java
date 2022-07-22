@@ -7,6 +7,10 @@ import com.informatorio.festmovies.entities.MovieEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class MovieMapper {
@@ -44,5 +48,11 @@ public class MovieMapper {
                 .id(movieEntity.getCategory().getId())
                 .name(movieEntity.getCategory().getName())
                 .build();
+    }
+
+    public List<MovieDTO> toListMovieDTO(List<MovieEntity> movieEntity){
+        return movieEntity.stream()
+                .map(this::toDTO)
+                .collect(toList());
     }
 }
