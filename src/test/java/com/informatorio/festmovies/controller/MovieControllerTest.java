@@ -6,6 +6,8 @@ import com.informatorio.festmovies.entities.CategoryEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
 import com.informatorio.festmovies.repository.MovieRepository;
 
+
+import lombok.var;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +45,7 @@ class MovieControllerTest {
 
     @MockBean
     private MovieRepository movieRepository;
+    /*---------------------------------Create Movie Test ------------------------------*/
 
     @Test
     void when_receiveMovieDTOWhitCategoryNonExistent_then_returnNotFound() throws Exception {
@@ -49,7 +56,6 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.message", is("Not found category id: 1")))
                 .andExpect(status().isNotFound());
     }
-
     @Test
     void when_receiveMovieDTOWhitoutCategory_then_returnBadRequest() throws Exception {
         mockMvc.perform(post("/movie").contentType(MediaType.APPLICATION_JSON)
@@ -68,6 +74,30 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.category.id", is(1)));
     }
 
+    /*---------------------------------Read Movie Test ------------------------------*/
+
+    @Test
+    void when_requestsAllMoviesAndListIsEmpty_then_returnListEmpty() throws Exception {
+        when(movieRepository.findAll()).thenReturn(listMovieEntity());
+
+        mockMvc.perform(get("/movie").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("List Empty")));
+    }
+
+    @Test
+    void when_requestsAllMovies_then_returnListMovies() throws Exception {
+       var list = listMovieEntity(
+                movieEntity(1l,categoryEntity()),
+                movieEntity(2L, categoryEntity())
+        );
+        when(movieRepository.findAll()).thenReturn(list);
+
+        mockMvc.perform(get("/movie").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id", is(1)))
+                .andExpect(jsonPath("$.[1].id", is(2)));
+    }
+
+
     private MovieEntity movieEntity(Long id, CategoryEntity categoryEntity){
         return MovieEntity.builder()
         .id(id)
@@ -84,5 +114,9 @@ class MovieControllerTest {
                 .id(1L)
                 .name("DRAMA")
                 .build();
+    }
+
+    private List<MovieEntity> listMovieEntity(MovieEntity ...movieEntity){
+        return Arrays.asList(movieEntity);
     }
 }
