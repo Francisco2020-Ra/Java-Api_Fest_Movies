@@ -27,4 +27,15 @@ public class MovieEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;
 
+
+    @Override
+    public String toString() {
+        return "MovieEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", duration=" + duration +
+                ", inscription=" + inscription +
+                '}';
+    }
 }

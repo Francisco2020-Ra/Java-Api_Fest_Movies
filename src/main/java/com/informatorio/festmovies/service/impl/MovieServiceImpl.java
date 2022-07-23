@@ -39,4 +39,16 @@ public class MovieServiceImpl implements MovieService {
         }
         return movieMapper.toListMovieDTO(listMovie);
     }
+
+    @Override
+    public MovieDTO updateMovie(Long id, MovieDTO movieDTO) throws ResourceNotFoundException {
+        MovieEntity movieEntity = movieRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Not found id: " + id)
+        );
+        MovieEntity updateMovie = movieMapper.setMovieEntity(movieEntity, movieDTO);
+        MovieEntity movie = movieRepository.save(updateMovie);
+        return movieMapper.toDTO(movie);
+    }
+
+
 }

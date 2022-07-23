@@ -32,5 +32,9 @@ public class MovieController {
         return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) throws ResourceNotFoundException {
+        return new ResponseEntity<>(movieService.updateMovie(id, movieDTO), HttpStatus.OK);
+    }
 
 }

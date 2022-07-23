@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -54,5 +53,15 @@ public class MovieMapper {
         return movieEntity.stream()
                 .map(this::toDTO)
                 .collect(toList());
+    }
+
+    public MovieEntity setMovieEntity(MovieEntity movieEntity, MovieDTO movieDTO){
+        movieEntity.setId(movieDTO.getId());
+        movieEntity.setTitle(movieDTO.getTitle());
+        movieEntity.setDescription(movieDTO.getDescription());
+        movieEntity.setDuration(movieDTO.getDuration());
+        movieEntity.setInscription(LocalDate.parse(movieDTO.getInscription()));
+        movieEntity.setCategory(getCategoryEntity(movieDTO));
+        return movieEntity;
     }
 }
