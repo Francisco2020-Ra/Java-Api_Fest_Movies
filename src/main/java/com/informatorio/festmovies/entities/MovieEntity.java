@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,6 +16,9 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "movie")
+@SQLDelete(sql = "UPDATE movie SET deleted = true WHERE id=?")
+@Where(clause ="deleted=false")
 public class MovieEntity {
 
     @Id
@@ -23,6 +28,8 @@ public class MovieEntity {
     private String description;
     private double duration;
     private LocalDate inscription;
+
+    private boolean deleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;

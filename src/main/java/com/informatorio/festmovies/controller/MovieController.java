@@ -37,4 +37,10 @@ public class MovieController {
         return new ResponseEntity<>(movieService.updateMovie(id, movieDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) throws ResourceNotFoundException {
+        movieService.deleteMovieId(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

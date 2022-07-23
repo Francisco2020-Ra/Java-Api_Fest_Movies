@@ -12,4 +12,6 @@ public interface MovieService {
     List<MovieDTO> getAllMovies() throws ResourceNotFoundException;
 
     MovieDTO updateMovie(Long id, MovieDTO movieDTO) throws ResourceNotFoundException;
+
+    void deleteMovieId(Long id) throws ResourceNotFoundException;
 }
