@@ -1,6 +1,7 @@
 package com.informatorio.festmovies.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.informatorio.festmovies.entities.CategoryEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,8 +47,8 @@ class MovieControllerTest {
 
     @MockBean
     private MovieRepository movieRepository;
-    /*---------------------------------Create Movie Test ------------------------------*/
 
+    /*---------------------------------Create Movie Test ------------------------------*/
     @Test
     void when_receiveMovieDTOWhitCategoryNonExistent_then_returnNotFound() throws Exception {
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
@@ -75,7 +77,6 @@ class MovieControllerTest {
     }
 
     /*---------------------------------Read Movie Test ------------------------------*/
-
     @Test
     void when_requestsAllMoviesAndListIsEmpty_then_returnListEmpty() throws Exception {
         when(movieRepository.findAll()).thenReturn(listMovieEntity());
@@ -83,7 +84,6 @@ class MovieControllerTest {
         mockMvc.perform(get("/movie").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", is("List Empty")));
     }
-
     @Test
     void when_requestsAllMovies_then_returnListMovies() throws Exception {
        var list = listMovieEntity(
@@ -95,6 +95,33 @@ class MovieControllerTest {
         mockMvc.perform(get("/movie").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[0].id", is(1)))
                 .andExpect(jsonPath("$.[1].id", is(2)));
+    }
+
+    /*---------------------------------Update Movie Test ------------------------------*/
+
+    @Test
+    void when_receiveAMovieNonExistent_then_returnNotFound() throws Exception {
+        when(movieRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/movie/1").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(movieEntity(1L,categoryEntity()))))
+                .andExpect(jsonPath("$.message", is("Not found id: 1")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void when_updateAMovie_then_returnOk() throws Exception {
+        when(movieRepository.findById(1L))
+                .thenReturn(Optional.of(movieEntity(1L, categoryEntity())));
+        when(movieRepository.save(movieEntity(1L, categoryEntity())))
+                .thenReturn(movieEntity(1L, categoryEntity()));
+
+        mockMvc.perform(put("/movie/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper
+                                .writeValueAsString(movieEntity(1L,categoryEntity()))))
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(status().isOk());
     }
 
 
