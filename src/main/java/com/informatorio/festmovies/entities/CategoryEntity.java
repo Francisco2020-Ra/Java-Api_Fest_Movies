@@ -24,4 +24,11 @@ public class CategoryEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<MovieEntity> movieEntityList = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "CategoryEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
