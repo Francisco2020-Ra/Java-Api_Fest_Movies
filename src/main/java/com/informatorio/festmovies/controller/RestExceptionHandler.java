@@ -70,21 +70,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errorDTO, new HttpHeaders(), errorDTO.getStatus(), request);
     }
 
-    @ExceptionHandler(value = {UnexpectedTypeException.class})
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(Exception ex, WebRequest request) {
-        Date date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String message = "Fields cannot be blank";
-        ApiErrorDTO apiError = ApiErrorDTO
-                .builder()
-                .timestamp(timestamp)
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .message(message)
-                .build();
-
-        return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
-    }
-
     @Data
     @Builder
     @AllArgsConstructor
