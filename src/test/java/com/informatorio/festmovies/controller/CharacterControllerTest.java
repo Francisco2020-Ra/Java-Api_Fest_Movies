@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,6 +113,21 @@ class CharacterControllerTest {
                         .content(objectMapper.writeValueAsString(getCharacter(1L, "Baty"))))
                 .andExpect(jsonPath("$.name", is("Baty")))
                 .andExpect(status().isCreated());
+    }
+
+    /*---------------------------------Delete Character Test ------------------------------*/
+
+    @Test
+    void when_callMethodDeleteAndThereAreNoCharacters_then_returnIdNonExistent() throws Exception {
+        when(characterRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/character/1")).andExpect(jsonPath("$.message", is("Not found id: 1")));
+    }
+    @Test
+    void when_callMethdoDeleteAndExistCharacter_then_returnNoContent() throws Exception {
+        when(characterRepository.findById(1L)).thenReturn(Optional.of(getCharacter(1L, "Baty")));
+
+        mockMvc.perform(delete("/character/1")).andExpect(status().isNoContent());
     }
 
     private CharacterEntity getCharacter(Long id, String name) {
