@@ -14,10 +14,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +35,7 @@ class CharacterControllerTest {
     @MockBean
     private CharacterRepository characterRepository;
 
+    /*---------------------------------Create Character Test ------------------------------*/
     @Test
     void when_saveCharacterDTOExistent_then_returnConflict() throws Exception {
         when(characterRepository.existsCharacteryByName(getCharacter(1L, "Baty").getName())).thenReturn(true);
@@ -62,8 +65,36 @@ class CharacterControllerTest {
                 .andExpect(jsonPath("$.name", is("Baty")));
     }
 
+    /*---------------------------------Read Character Test ------------------------------*/
+    @Test
+    void when_callMethodGetAllCharacterAndThereAreNoCharacters_then_returnNoContent() throws Exception {
+        when(characterRepository.findAll()).thenReturn(Arrays.asList());
+
+        mockMvc.perform(get("/character"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("List Empty")));
+    }
+
+    @Test
+    void when_callMethodGetAllCharacterAndCharactersExist_then_returnListCharacters() throws Exception {
+        when(characterRepository.findAll())
+                .thenReturn(
+                        Arrays.asList(
+                                getCharacter(1L, "Baty"),
+                                getCharacter(2L, "Batman"))
+                );
+
+        mockMvc.perform(get("/character"))
+                .andExpect(jsonPath("$.[0].id", is(1)))
+                .andExpect(jsonPath("$.[1].id", is(2)));
+    }
+
+    /*---------------------------------Update Character Test ------------------------------*/
+
+
     private CharacterEntity getCharacter(Long id, String name) {
         return CharacterEntity.builder()
+                .id(id)
                 .name(name)
                 .lastName("Batman")
                 .birthDate(LocalDate.parse("2021-06-02"))
