@@ -2,7 +2,7 @@ package com.informatorio.festmovies.service.impl;
 
 import com.informatorio.festmovies.dto.CategoryDTO;
 import com.informatorio.festmovies.entities.CategoryEntity;
-import com.informatorio.festmovies.exception.CategoryExistException;
+import com.informatorio.festmovies.exception.ExistException;
 import com.informatorio.festmovies.exception.ResourceNotFoundException;
 import com.informatorio.festmovies.mapper.CategoryMapper;
 import com.informatorio.festmovies.repository.CategoryRepository;
@@ -23,10 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO addCategory(CategoryDTO categoryDTO) throws CategoryExistException {
+    public CategoryDTO addCategory(CategoryDTO categoryDTO) throws ExistException {
         CategoryEntity categoryEntity = categoryMapper.toCategoryEntity(categoryDTO);
         if (categoryRepository.existsCategoryByName(categoryEntity.getName())) {
-            throw new CategoryExistException("Existing category");
+            throw new ExistException("Existing category");
         }
         CategoryEntity categoryEntity1 = categoryRepository.save(categoryEntity);
         return categoryMapper.toCategoryDTO(categoryEntity1);

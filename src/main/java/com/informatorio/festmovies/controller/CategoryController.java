@@ -1,7 +1,7 @@
 package com.informatorio.festmovies.controller;
 
 import com.informatorio.festmovies.dto.CategoryDTO;
-import com.informatorio.festmovies.exception.CategoryExistException;
+import com.informatorio.festmovies.exception.ExistException;
 import com.informatorio.festmovies.exception.ResourceNotFoundException;
 import com.informatorio.festmovies.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws CategoryExistException {
+    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws ExistException {
         return new ResponseEntity<>(categoryService.addCategory(categoryDTO), HttpStatus.CREATED);
     }
 
