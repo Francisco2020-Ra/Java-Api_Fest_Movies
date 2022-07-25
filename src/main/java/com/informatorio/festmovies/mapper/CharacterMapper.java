@@ -35,4 +35,13 @@ public class CharacterMapper {
                 .map(this::toDTO)
                 .collect(toList());
     }
+
+    public CharacterEntity toSet(CharacterEntity characterEntity, CharacterDTO characterDTO){
+       characterEntity.setId(characterDTO.getId());
+       characterEntity.setName(characterDTO.getName());
+       characterEntity.setLastName(characterDTO.getLastName());
+       characterEntity.setBirthDate(LocalDate.parse(characterDTO.getBirthDate()));
+       characterEntity.setPassport(characterDTO.getPassport());
+        return characterEntity;
+    }
 }

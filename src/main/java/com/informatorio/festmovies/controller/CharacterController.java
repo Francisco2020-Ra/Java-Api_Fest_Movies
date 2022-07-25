@@ -31,4 +31,9 @@ public class CharacterController {
     public ResponseEntity<?> getAllCharacter() throws ResourceNotFoundException {
         return new ResponseEntity<>(characterService.getAllCharacter(), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCharacter(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO) throws ResourceNotFoundException {
+        return new ResponseEntity<>(characterService.updateCharacter(id, characterDTO), HttpStatus.CREATED);
+    }
 }

@@ -41,4 +41,14 @@ public class CharacterServiceImpl implements CharacterService {
         }
         return characterMapper.toListDTOCharacter(listCharacter);
     }
+
+    @Override
+    public CharacterDTO updateCharacter(Long id, CharacterDTO characterDTO) throws ResourceNotFoundException {
+        CharacterEntity character = characterRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Not found id: " + id)
+        );
+        CharacterEntity characterSet = characterMapper.toSet(character, characterDTO);
+        CharacterEntity characterSave = characterRepository.save(characterSet);
+        return characterMapper.toDTO(characterSave);
+    }
 }
