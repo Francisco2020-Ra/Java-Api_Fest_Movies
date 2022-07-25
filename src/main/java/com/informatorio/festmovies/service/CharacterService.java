@@ -13,4 +13,6 @@ public interface CharacterService {
     List<CharacterDTO> getAllCharacter () throws ResourceNotFoundException;
 
     CharacterDTO updateCharacter(Long id, CharacterDTO characterDTO) throws ResourceNotFoundException;
+
+    void deleteCharacter(Long id) throws ResourceNotFoundException;
 }

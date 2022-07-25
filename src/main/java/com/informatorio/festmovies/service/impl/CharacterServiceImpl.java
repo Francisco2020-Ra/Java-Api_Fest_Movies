@@ -51,4 +51,12 @@ public class CharacterServiceImpl implements CharacterService {
         CharacterEntity characterSave = characterRepository.save(characterSet);
         return characterMapper.toDTO(characterSave);
     }
+
+    @Override
+    public void deleteCharacter(Long id) throws ResourceNotFoundException {
+        characterRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Not found id: " + id)
+        );
+        characterRepository.deleteById(id);
+    }
 }

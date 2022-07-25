@@ -36,4 +36,10 @@ public class CharacterController {
     public ResponseEntity<?> updateCharacter(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO) throws ResourceNotFoundException {
         return new ResponseEntity<>(characterService.updateCharacter(id, characterDTO), HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCharacter(@PathVariable Long id) throws ResourceNotFoundException {
+        characterService.deleteCharacter(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
