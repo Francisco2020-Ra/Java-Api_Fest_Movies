@@ -5,6 +5,8 @@ import com.informatorio.festmovies.entities.CharacterEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class CharacterMapper {
@@ -26,5 +28,11 @@ public class CharacterMapper {
                 .birthDate(characterEntity.getBirthDate().toString())
                 .passport(characterEntity.getPassport())
                 .build();
+    }
+
+    public List<CharacterDTO> toListDTOCharacter(List<CharacterEntity> characterList){
+        return characterList.stream()
+                .map(this::toDTO)
+                .collect(toList());
     }
 }

@@ -3,13 +3,11 @@ package com.informatorio.festmovies.controller;
 
 import com.informatorio.festmovies.dto.CharacterDTO;
 import com.informatorio.festmovies.exception.ExistException;
+import com.informatorio.festmovies.exception.ResourceNotFoundException;
 import com.informatorio.festmovies.service.CharacterService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -27,5 +25,10 @@ public class CharacterController {
     public ResponseEntity<?> addCharacter(@Valid @RequestBody CharacterDTO characterDTO)
             throws ExistException {
         return new ResponseEntity<>(characterService.addCharacter(characterDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllCharacter() throws ResourceNotFoundException {
+        return new ResponseEntity<>(characterService.getAllCharacter(), HttpStatus.OK);
     }
 }
