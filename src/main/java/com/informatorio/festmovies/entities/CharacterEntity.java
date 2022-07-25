@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,6 +18,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "characters")
+@SQLDelete(sql = "UPDATE characters SET deleted = true WHERE id=?")
+@Where(clause ="deleted=false")
 public class CharacterEntity {
 
     @Id
@@ -26,6 +30,8 @@ public class CharacterEntity {
     private String lastName;
     private LocalDate birthDate;
     private Integer passport;
+
+    private boolean deleted = Boolean.FALSE;
 
     @ManyToMany(mappedBy = "characters")
     private Set<MovieEntity> movies = new HashSet<>();
