@@ -1,7 +1,5 @@
 package com.informatorio.festmovies.controller;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.informatorio.festmovies.entities.CategoryEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
@@ -22,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
