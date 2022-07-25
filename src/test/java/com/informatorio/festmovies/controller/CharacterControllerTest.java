@@ -15,10 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +59,7 @@ class CharacterControllerTest {
     @Test
     void when_saveCharacterDTONonExistent_then_returnCreated() throws Exception {
         when(characterRepository.existsCharacteryByName(getCharacter(1L, "Baty").getName())).thenReturn(false);
-        when(characterRepository.save(getCharacter(1L, "Baty"))).thenReturn(getCharacter(1L, "Baty"));
+        when(characterRepository.save(getCharacter(null, "Baty"))).thenReturn(getCharacter(1L, "Baty"));
 
         mockMvc.perform(post("/character").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(getCharacter(1L, "Baty"))))
@@ -67,7 +69,7 @@ class CharacterControllerTest {
 
     /*---------------------------------Read Character Test ------------------------------*/
     @Test
-    void when_callMethodGetAllCharacterAndThereAreNoCharacters_then_returnNoContent() throws Exception {
+    void when_callMethodGetAllCharacterAndThereAreNoCharacters_then_returnListEmpty() throws Exception {
         when(characterRepository.findAll()).thenReturn(Arrays.asList());
 
         mockMvc.perform(get("/character"))
@@ -91,6 +93,26 @@ class CharacterControllerTest {
 
     /*---------------------------------Update Character Test ------------------------------*/
 
+    @Test
+    void when_callMethodUpdateCharacterAndThereAreNoCharacters_then_returnIdNonExistent() throws Exception {
+        when(characterRepository.findById(1l)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/character/1").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(getCharacter(1L, "Baty"))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Not found id: 1")));
+    }
+
+    @Test
+    void when_callMethodUpdateCharacter_then_returnCreated() throws Exception {
+        when(characterRepository.findById(1l)).thenReturn(Optional.of(getCharacter(1L,"Baty")));
+        when(characterRepository.save(getCharacter(1L, "Baty"))).thenReturn(getCharacter(1L, "Baty"));
+
+        mockMvc.perform(put("/character/1").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(getCharacter(1L, "Baty"))))
+                .andExpect(jsonPath("$.name", is("Baty")))
+                .andExpect(status().isCreated());
+    }
 
     private CharacterEntity getCharacter(Long id, String name) {
         return CharacterEntity.builder()

@@ -11,4 +11,6 @@ public interface CharacterService {
     CharacterDTO addCharacter(CharacterDTO characterDTO) throws ExistException;
 
     List<CharacterDTO> getAllCharacter () throws ResourceNotFoundException;
+
+    CharacterDTO updateCharacter(Long id, CharacterDTO characterDTO) throws ResourceNotFoundException;
 }
