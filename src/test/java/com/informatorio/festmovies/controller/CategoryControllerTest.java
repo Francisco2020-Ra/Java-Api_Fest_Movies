@@ -46,7 +46,7 @@ class CategoryControllerTest {
         when(categoryRepository.save(categoryEntity(null, "DRAMA"))).thenReturn(categoryEntity(1L, "DRAMA"));
         mockMvc.perform(post("/category")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryEntity(1L, "DRAMA"))))
+                        .content(objectMapper.writeValueAsString(categoryEntity(null, "DRAMA"))))
                 .andExpect(jsonPath("$.name", is("DRAMA")));
     }
 
