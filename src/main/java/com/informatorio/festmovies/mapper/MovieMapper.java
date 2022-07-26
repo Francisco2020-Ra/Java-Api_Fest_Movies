@@ -1,18 +1,28 @@
 package com.informatorio.festmovies.mapper;
 
 import com.informatorio.festmovies.dto.CategoryDTO;
+import com.informatorio.festmovies.dto.CharacterDTO;
 import com.informatorio.festmovies.dto.MovieDTO;
 import com.informatorio.festmovies.entities.CategoryEntity;
+import com.informatorio.festmovies.entities.CharacterEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
 @Component
 public class MovieMapper {
+
+    @Autowired
+    private CharacterMapper characterMapper;
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     public MovieEntity toEntity(MovieDTO movieDTO){
         return MovieEntity.builder()
@@ -25,10 +35,7 @@ public class MovieMapper {
     }
 
     public CategoryEntity getCategoryEntity(MovieDTO movieDTO){
-        return CategoryEntity.builder()
-                .id(movieDTO.getCategory().getId())
-                .name(movieDTO.getCategory().getName())
-                .build();
+        return categoryMapper.toCategoryEntity(movieDTO.getCategory());
     }
 
     public MovieDTO toDTO(MovieEntity movieEntity){
@@ -43,16 +50,24 @@ public class MovieMapper {
     }
 
     public CategoryDTO getCategoryDTO(MovieEntity movieEntity){
-        return CategoryDTO.builder()
-                .id(movieEntity.getCategory().getId())
-                .name(movieEntity.getCategory().getName())
-                .build();
+        return categoryMapper.toCategoryDTO(movieEntity.getCategory());
     }
 
     public List<MovieDTO> toListMovieDTO(List<MovieEntity> movieEntity){
         return movieEntity.stream()
-                .map(this::toDTO)
+                .map(this::toFullMovieDTO)
                 .collect(toList());
+    }
+
+    public MovieDTO toFullMovieDTO(MovieEntity movieEntity){
+        MovieDTO movieDTO = toDTO(movieEntity);
+        movieDTO.setCharacters(setCharacterDTO(movieEntity.getCharacters()));
+        return  movieDTO;
+    }
+
+
+    public Set<CharacterDTO> setCharacterDTO(Set<CharacterEntity> characterEntitySet){
+        return characterMapper.toSetDTOCharacter(characterEntitySet);
     }
 
     public MovieEntity setMovieEntity(MovieEntity movieEntity, MovieDTO movieDTO){

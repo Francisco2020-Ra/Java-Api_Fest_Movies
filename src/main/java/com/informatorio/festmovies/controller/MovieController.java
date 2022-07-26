@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -41,6 +42,11 @@ public class MovieController {
     public ResponseEntity<?> deleteMovie(@PathVariable Long id) throws ResourceNotFoundException {
         movieService.deleteMovieId(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/character")
+    public ResponseEntity<?> addCharacterToMovie(@PathVariable Long id, @RequestBody List<Long> actorId) throws ResourceNotFoundException {
+        return new ResponseEntity<>(movieService.addCharacterToMovie(id, actorId), HttpStatus.CREATED);
     }
 
 }

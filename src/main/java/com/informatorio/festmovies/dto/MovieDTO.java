@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 
 @Data
@@ -22,4 +23,6 @@ public class MovieDTO {
     private String inscription;
     @NotNull
     private CategoryDTO category;
+
+    private Set<CharacterDTO> characters;
 }
