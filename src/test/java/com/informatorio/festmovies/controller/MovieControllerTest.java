@@ -2,8 +2,10 @@ package com.informatorio.festmovies.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.informatorio.festmovies.entities.CategoryEntity;
+import com.informatorio.festmovies.entities.CharacterEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
 import com.informatorio.festmovies.repository.CategoryRepository;
+import com.informatorio.festmovies.repository.CharacterRepository;
 import com.informatorio.festmovies.repository.MovieRepository;
 
 
@@ -21,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +52,8 @@ class MovieControllerTest {
     private MovieRepository movieRepository;
     @MockBean
     private CategoryRepository categoryRepository;
+    @MockBean
+    private CharacterRepository characterRepository;
 
     /*---------------------------------Create Movie Test ------------------------------*/
     @Test
@@ -143,7 +149,51 @@ class MovieControllerTest {
         mockMvc.perform(delete("/movie/1")).andExpect(status().isNoContent());
     }
 
+    /*---------------------------------AddCharacterToMovie  Test ------------------------------*/
+
+    @Test
+    void when_receiveAIdMovieNonExistent_then_returnNotFoundId() throws Exception {
+        when(movieRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/movie/1/character").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Arrays.asList(1,2,3))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Not found id: 1")));
+    }
+
+    @Test
+    void when_receiveAIdMovieExistentAndThereAreNotCharacter_then_returnNotFoundId() throws Exception {
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movieEntity(1L, categoryEntity())));
+
+        when(characterRepository.findById(1L)).thenReturn(Optional.of(characterEntity(1L)));
+        when(characterRepository.findById(2L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/movie/1/character").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Arrays.asList(1,2))))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Not found id: 2")));
+    }
+
+    @Test
+    void when_receiveAIdMovieExistentAndExistCharacter_then_returnCreated() throws Exception {
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movieEntity(1L, categoryEntity())));
+
+        when(characterRepository.findById(1L)).thenReturn(Optional.of(characterEntity(1L)));
+        when(characterRepository.findById(2L)).thenReturn(Optional.of(characterEntity(2L)));
+
+        mockMvc.perform(post("/movie/1/character").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Arrays.asList(1,2))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.category.id", is(1)))
+                .andExpect(jsonPath("$.characters.[0].id", is(2)))
+                .andExpect(jsonPath("$.characters.[1].id", is(1)));
+
+    }
+
+
     private MovieEntity movieEntity(Long id, CategoryEntity categoryEntity) {
+        Set<CharacterEntity> character = new HashSet<>();
         return MovieEntity.builder()
                 .id(id)
                 .title("Baty: Una Gatita Coreana")
@@ -151,6 +201,7 @@ class MovieControllerTest {
                 .duration(54.5D)
                 .inscription(LocalDate.parse("2022-02-13"))
                 .category(categoryEntity)
+                .characters(character)
                 .build();
     }
 
@@ -163,5 +214,15 @@ class MovieControllerTest {
 
     private List<MovieEntity> listMovieEntity(MovieEntity... movieEntity) {
         return Arrays.asList(movieEntity);
+    }
+
+    private CharacterEntity characterEntity(Long id){
+        Set<MovieEntity> movieEntities = new HashSet<>();
+        movieEntities.add(movieEntity(1L, categoryEntity()));
+        return CharacterEntity.builder()
+                .id(id).name("Baty").lastName("Batman")
+                .birthDate(LocalDate.parse("2021-02-13")).passport(34599434)
+                .movies(movieEntities)
+                .build();
     }
 }

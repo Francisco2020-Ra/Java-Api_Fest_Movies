@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 public class CategoryMapper {
 
     public CategoryEntity toCategoryEntity(CategoryDTO categoryDTO){
-        return CategoryEntity.builder().name(categoryDTO.getName()).build();
+        return CategoryEntity.builder().id(categoryDTO.getId()).name(categoryDTO.getName()).build();
     }
 
     public CategoryDTO toCategoryDTO(CategoryEntity categoryEntity){

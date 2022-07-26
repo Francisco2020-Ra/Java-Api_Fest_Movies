@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.toList;
 
 @Component
@@ -34,6 +37,12 @@ public class CharacterMapper {
         return characterList.stream()
                 .map(this::toDTO)
                 .collect(toList());
+    }
+
+    public Set<CharacterDTO> toSetDTOCharacter(Set<CharacterEntity> characterList){
+        return characterList.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toSet());
     }
 
     public CharacterEntity toSet(CharacterEntity characterEntity, CharacterDTO characterDTO){
