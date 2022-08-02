@@ -2,15 +2,16 @@ package com.informatorio.festmovies.mapper;
 
 import com.informatorio.festmovies.dto.CategoryDTO;
 import com.informatorio.festmovies.dto.CharacterDTO;
+import com.informatorio.festmovies.dto.DirectoryDTO;
 import com.informatorio.festmovies.dto.MovieDTO;
 import com.informatorio.festmovies.entities.CategoryEntity;
 import com.informatorio.festmovies.entities.CharacterEntity;
+import com.informatorio.festmovies.entities.DirectoryEntity;
 import com.informatorio.festmovies.entities.MovieEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,8 @@ public class MovieMapper {
     private CharacterMapper characterMapper;
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private DirectoryMapper directoryMapper;
 
     public MovieEntity toEntity(MovieDTO movieDTO){
         return MovieEntity.builder()
@@ -49,8 +52,11 @@ public class MovieMapper {
                 .build();
     }
 
-    public CategoryDTO getCategoryDTO(MovieEntity movieEntity){
+    private CategoryDTO getCategoryDTO(MovieEntity movieEntity){
         return categoryMapper.toCategoryDTO(movieEntity.getCategory());
+    }
+    private DirectoryDTO getDirectoryDTO(MovieEntity movieEntity){
+        return directoryMapper.toDTO(movieEntity.getDirectory());
     }
 
     public List<MovieDTO> toListMovieDTO(List<MovieEntity> movieEntity){
@@ -65,7 +71,6 @@ public class MovieMapper {
         return  movieDTO;
     }
 
-
     public Set<CharacterDTO> setCharacterDTO(Set<CharacterEntity> characterEntitySet){
         return characterMapper.toSetDTOCharacter(characterEntitySet);
     }
@@ -77,6 +82,12 @@ public class MovieMapper {
         movieEntity.setDuration(movieDTO.getDuration());
         movieEntity.setInscription(LocalDate.parse(movieDTO.getInscription()));
         movieEntity.setCategory(getCategoryEntity(movieDTO));
+        movieEntity.setDirectory(getDirectoryEntity(movieDTO));
         return movieEntity;
     }
+
+    private DirectoryEntity getDirectoryEntity(MovieDTO movieDTO){
+        return directoryMapper.toEntity(movieDTO.getDirectory());
+    }
+
 }

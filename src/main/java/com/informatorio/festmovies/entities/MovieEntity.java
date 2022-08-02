@@ -37,6 +37,9 @@ public class MovieEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DirectoryEntity directory;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "movie_character",
     joinColumns = @JoinColumn(name = "movie_id"),

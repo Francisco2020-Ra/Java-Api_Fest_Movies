@@ -23,6 +23,8 @@ public class MovieDTO {
     private String inscription;
     @NotNull
     private CategoryDTO category;
+    @NotNull
+    private DirectoryDTO directory;
 
     private Set<CharacterDTO> characters;
 }
